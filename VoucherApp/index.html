@@ -1,0 +1,138 @@
+<div class="loader" id="loader">
+    <img src="../img/light.svg" alt="">
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Voucher App</title>
+    <link rel="stylesheet" href="../loader.css">
+    <link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<style>
+    *{
+        user-select: none;
+    }
+    .text-right{
+        text-align: right;
+    }
+    .width-50{
+        width: 50px;
+    }
+    .width-300{
+        width: 300px;
+    }
+    .width-150{
+        width: 150px;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col col-lg-10">
+                <div class="my-5">
+                    <h5 class="text-primary">Voucher App (Apply jQuery)</h5>
+                    <p>Bootstrap & jQuery</p>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <h5>Product List</h5>
+                    <button class="btn btn-primary btn-sm add-row-button">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Product Name</th>
+                            <th class="text-right">Cost</th>
+                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                <p class="mb-0">Total</p>
+                            </td>
+                            <td class="text-right">
+                                <h4 class="mb-0" id="total">0</h4>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../vendor/jQuery/jQuery.min.js"></script>
+<script>
+    if(window.innerWidth < 600){
+        window.location.href = "../error.html"
+    }
+    $(document).ready(function () {
+        $(".loader").css("display", "none")
+    })
+    function createRow() {
+        $("tbody").append(`
+            <tr>
+                <td class="width-50">
+                    <button class="btn btn-sm btn-outline-primary remove-row-button">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+                <td class="width-300">
+                    <input type="text" class="form-control form-control-sm product-name">
+                </td>
+                <td class="width-150">
+                    <input type="number" class="form-control text-right form-control-sm cost" min="0">
+                </td>
+                <td class="width-150">
+                    <input type="number" class="form-control text-right form-control-sm quantity" min="0">
+                </td>
+                <td class="text-right">
+                    <h4 class="price mb-0">0</h4>
+                </td>
+            </tr>
+        `);
+    }
+
+    function total() {
+        $("#total").html($(".price").toArray().map(el => el.innerHTML).reduce((x,y) => Number(x) + Number(y)));
+    }
+
+    createRow();
+
+    $(".add-row-button").click(function () {
+        createRow();
+    })
+
+    $('tbody').delegate('.remove-row-button', 'click', function () {
+        // $(this).parent().parent().remove();
+        $(this).parentsUntil("tbody").remove();
+
+        if($('tbody').children().length < 1){
+            createRow();
+        }
+
+        total();
+    })
+
+    $("tbody").delegate("input", "keyup change", function () {
+        let cost = $(this).parentsUntil("tbody").find(".cost").val();
+        let quantity = $(this).parentsUntil("tbody").find(".quantity").val();
+        $(this).parentsUntil("tbody").find(".price").html(cost * quantity);
+
+        total();
+    })
+</script>
+</html>
